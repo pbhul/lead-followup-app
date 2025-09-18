@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -14,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -67,7 +67,7 @@ model Lead {
   source    LeadSource @default(OTHER)
   status    LeadStatus @default(NEW)
   notes     String?
-  budget    Float?
+  budget    Int?
   timeline  String?
   userId    String
   createdAt DateTime   @default(now())
@@ -88,7 +88,7 @@ model Call {
   status       CallStatus   @default(PENDING)
   duration     Int?
   recordingUrl String?
-  transcript   String? @db.Text
+  transcript   String?
   outcome      CallOutcome?
   scheduledAt  DateTime
   completedAt  DateTime?
@@ -106,7 +106,7 @@ model Campaign {
   id          String    @id @default(cuid())
   name        String
   description String?
-  script      String @db.Text
+  script      String
   isActive    Boolean   @default(true)
   userId      String
   createdAt   DateTime  @default(now())
@@ -122,7 +122,7 @@ model CampaignStep {
   campaignId   String
   stepNumber   Int
   delayMinutes Int
-  script       String @db.Text
+  script       String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

@@ -18,30 +18,46 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
+        // Demo credentials for development
+        if (credentials.email === 'demo@example.com' && credentials.password === 'demo123') {
+          try {
+            // Try to find existing user
+            let user = await prisma.user.findUnique({
+              where: {
+                email: credentials.email
+              }
+            })
+
+            // If user doesn't exist, create them
+            if (!user) {
+              user = await prisma.user.create({
+                data: {
+                  email: credentials.email,
+                  name: 'Demo User',
+                  role: 'AGENT',
+                }
+              })
+            }
+
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              role: user.role,
+            }
+          } catch (error) {
+            console.error('Database error during auth:', error)
+            // Fallback: return demo user without database
+            return {
+              id: 'demo-user-id',
+              email: credentials.email,
+              name: 'Demo User',
+              role: 'AGENT' as any,
+            }
           }
-        })
-
-        if (!user) {
-          return null
         }
 
-        // For demo purposes - in production you'd have hashed passwords
-        // const isPasswordValid = await bcryptjs.compare(credentials.password, user.password)
-
-        // For now, we'll use a simple check - you can add password hashing later
-        if (credentials.password !== 'demo123') {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        }
+        return null
       }
     })
   ],
