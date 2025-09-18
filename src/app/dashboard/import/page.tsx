@@ -197,8 +197,8 @@ export default function ImportPage() {
               <div>
                 <h4 className="font-medium text-gray-900 mb-3">Required Fields</h4>
                 <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• firstName - Lead's first name</li>
-                  <li>• lastName - Lead's last name</li>
+                  <li>• firstName - Lead&apos;s first name</li>
+                  <li>• lastName - Lead&apos;s last name</li>
                   <li>• email - Valid email address</li>
                   <li>• phone - Phone number with area code</li>
                 </ul>

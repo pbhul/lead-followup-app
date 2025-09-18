@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { leadId, campaignId } = body
+    const { leadId } = body
 
     if (!leadId) {
       return NextResponse.json({ error: 'Lead ID is required' }, { status: 400 })

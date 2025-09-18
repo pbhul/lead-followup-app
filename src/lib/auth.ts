@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
               id: 'demo-user-id',
               email: credentials.email,
               name: 'Demo User',
-              role: 'AGENT' as any,
+              role: 'AGENT' as const,
             }
           }
         }

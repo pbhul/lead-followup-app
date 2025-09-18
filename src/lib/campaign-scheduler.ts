@@ -42,46 +42,46 @@ export class CampaignScheduler {
     }
   }
 
-  private async processLeadCampaign(leadCampaign: any) {
+  private async processLeadCampaign(leadCampaign: Record<string, unknown>) {
     try {
-      const { lead, campaign } = leadCampaign
-      const currentStep = campaign.steps.find((step: any) =>
-        step.stepNumber === leadCampaign.currentStep
+      const { lead, campaign } = leadCampaign as { lead: Record<string, unknown>; campaign: { steps: Record<string, unknown>[] } }
+      const currentStep = campaign.steps.find((step: Record<string, unknown>) =>
+        step.stepNumber === (leadCampaign.currentStep as number)
       )
 
       if (!currentStep) {
         // No more steps, deactivate campaign
         await prisma.leadCampaign.update({
-          where: { id: leadCampaign.id },
+          where: { id: leadCampaign.id as string as string },
           data: { isActive: false }
         })
         return
       }
 
       // Check if lead is still eligible for calls
-      if (lead.status === LeadStatus.CLOSED || lead.status === LeadStatus.LOST) {
+      if (lead.status === 'CLOSED' || lead.status === 'LOST') {
         await prisma.leadCampaign.update({
-          where: { id: leadCampaign.id },
+          where: { id: leadCampaign.id as string as string },
           data: { isActive: false }
         })
         return
       }
 
       // Generate script for this step
-      const script = this.generateStepScript(currentStep.script, lead)
+      const script = this.generateStepScript(currentStep.scriptTemplate as string, lead)
 
       // Create call record
       const call = await prisma.call.create({
         data: {
-          leadId: lead.id,
-          status: CallStatus.PENDING,
+          leadId: lead.id as string,
+          status: 'PENDING',
           scheduledAt: new Date(),
         }
       })
 
       // Initiate call with Bland AI
       const callResult = await blandAI.initiateCall({
-        phone_number: lead.phone,
+        phone_number: lead.phone as string,
         task: script,
         voice: 'maya',
         reduce_latency: true,
@@ -95,7 +95,7 @@ export class CampaignScheduler {
           where: { id: call.id },
           data: {
             blandCallId: callResult.call_id,
-            status: CallStatus.IN_PROGRESS
+            status: 'IN_PROGRESS'
           }
         })
 
@@ -107,7 +107,7 @@ export class CampaignScheduler {
         await prisma.call.update({
           where: { id: call.id },
           data: {
-            status: CallStatus.FAILED,
+            status: 'FAILED',
             completedAt: new Date()
           }
         })
@@ -118,16 +118,16 @@ export class CampaignScheduler {
     }
   }
 
-  private async scheduleNextStep(leadCampaign: any, steps: any[]) {
-    const nextStepNumber = leadCampaign.currentStep + 1
+  private async scheduleNextStep(leadCampaign: Record<string, unknown>, steps: Record<string, unknown>[]) {
+    const nextStepNumber = (leadCampaign.currentStep as number) + 1
     const nextStep = steps.find(step => step.stepNumber === nextStepNumber)
 
     if (nextStep && nextStep.isActive) {
       const nextCallTime = new Date()
-      nextCallTime.setMinutes(nextCallTime.getMinutes() + nextStep.delayMinutes)
+      nextCallTime.setMinutes(nextCallTime.getMinutes() + (nextStep.delayMinutes as number))
 
       await prisma.leadCampaign.update({
-        where: { id: leadCampaign.id },
+        where: { id: leadCampaign.id as string },
         data: {
           currentStep: nextStepNumber,
           nextScheduledCall: nextCallTime
@@ -136,7 +136,7 @@ export class CampaignScheduler {
     } else {
       // No more steps, deactivate campaign
       await prisma.leadCampaign.update({
-        where: { id: leadCampaign.id },
+        where: { id: leadCampaign.id as string },
         data: {
           isActive: false,
           nextScheduledCall: null
@@ -145,22 +145,22 @@ export class CampaignScheduler {
     }
   }
 
-  private generateStepScript(template: string, lead: any): string {
+  private generateStepScript(template: string, lead: Record<string, unknown>): string {
     let script = template
 
     // Replace placeholders with lead data
-    script = script.replace(/{firstName}/g, lead.firstName)
-    script = script.replace(/{lastName}/g, lead.lastName)
-    script = script.replace(/{email}/g, lead.email)
-    script = script.replace(/{phone}/g, lead.phone)
-    script = script.replace(/{source}/g, lead.source)
+    script = script.replace(/{firstName}/g, lead.firstName as string)
+    script = script.replace(/{lastName}/g, lead.lastName as string)
+    script = script.replace(/{email}/g, lead.email as string)
+    script = script.replace(/{phone}/g, lead.phone as string)
+    script = script.replace(/{source}/g, lead.source as string)
 
     if (lead.budget) {
-      script = script.replace(/{budget}/g, lead.budget.toLocaleString())
+      script = script.replace(/{budget}/g, (lead.budget as number).toLocaleString())
     }
 
     if (lead.timeline) {
-      script = script.replace(/{timeline}/g, lead.timeline)
+      script = script.replace(/{timeline}/g, lead.timeline as string)
     }
 
     return script

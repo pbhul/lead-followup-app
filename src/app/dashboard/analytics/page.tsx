@@ -1,6 +1,6 @@
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart3, TrendingUp, Phone, Users, Clock, Target } from 'lucide-react'
+import { TrendingUp, Phone, Users, Clock, Target } from 'lucide-react'
 
 export default function AnalyticsPage() {
   // Mock data - in real app, this would come from database
@@ -208,7 +208,7 @@ export default function AnalyticsPage() {
               <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                 <h4 className="font-medium text-green-800">🎯 Best Performing Campaign</h4>
                 <p className="text-sm text-green-700 mt-1">
-                  "Qualification Check" has the highest conversion rate at 38.9%. Consider applying its script style to other campaigns.
+                  &ldquo;Qualification Check&rdquo; has the highest conversion rate at 38.9%. Consider applying its script style to other campaigns.
                 </p>
               </div>
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -220,7 +220,7 @@ export default function AnalyticsPage() {
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <h4 className="font-medium text-yellow-800">💡 Optimization Opportunity</h4>
                 <p className="text-sm text-yellow-700 mt-1">
-                  27% of calls result in "Not Qualified" outcomes. Consider refining your lead qualification criteria before calling.
+                  27% of calls result in &ldquo;Not Qualified&rdquo; outcomes. Consider refining your lead qualification criteria before calling.
                 </p>
               </div>
             </div>

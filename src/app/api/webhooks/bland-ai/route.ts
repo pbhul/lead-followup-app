@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update call status
-    const updatedCall = await prisma.call.update({
+    await prisma.call.update({
       where: { id: call.id },
       data: {
         status: payload.status === 'completed' ? CallStatus.COMPLETED :
