@@ -89,6 +89,7 @@ model Call {
   duration     Int?
   recordingUrl String?
   transcript   String?
+  notes        String?      // User notes about the call/lead requirements
   outcome      CallOutcome?
   scheduledAt  DateTime
   completedAt  DateTime?
