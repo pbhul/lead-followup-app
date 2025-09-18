@@ -3,9 +3,15 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { campaignScheduler } from '@/lib/campaign-scheduler'
 
+interface RouteParams {
+  params: Promise<{
+    id: string
+  }>
+}
+
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: RouteParams
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -15,8 +21,7 @@ export async function POST(
 
     const body = await request.json()
     const { leadId } = body
-    const resolvedParams = await context.params
-    const campaignId = resolvedParams.id
+    const { id: campaignId } = await params
 
     if (!leadId) {
       return NextResponse.json({ error: 'Lead ID is required' }, { status: 400 })
@@ -46,7 +51,7 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: RouteParams
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -56,8 +61,7 @@ export async function DELETE(
 
     const body = await request.json()
     const { leadId } = body
-    const resolvedParams = await context.params
-    const campaignId = resolvedParams.id
+    const { id: campaignId } = await params
 
     if (!leadId) {
       return NextResponse.json({ error: 'Lead ID is required' }, { status: 400 })
