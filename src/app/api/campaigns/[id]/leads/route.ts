@@ -5,7 +5,7 @@ import { campaignScheduler } from '@/lib/campaign-scheduler'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -15,7 +15,7 @@ export async function POST(
 
     const body = await request.json()
     const { leadId } = body
-    const resolvedParams = await params
+    const resolvedParams = await context.params
     const campaignId = resolvedParams.id
 
     if (!leadId) {
@@ -46,7 +46,7 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -56,7 +56,7 @@ export async function DELETE(
 
     const body = await request.json()
     const { leadId } = body
-    const resolvedParams = await params
+    const resolvedParams = await context.params
     const campaignId = resolvedParams.id
 
     if (!leadId) {

@@ -20,6 +20,7 @@ const eslintConfig = [
       "no-var": "error",
       "@typescript-eslint/no-non-null-assertion": "warn",
       "@typescript-eslint/prefer-optional-chain": "off",
+      "@typescript-eslint/require-await": "off",
     },
   },
   {
